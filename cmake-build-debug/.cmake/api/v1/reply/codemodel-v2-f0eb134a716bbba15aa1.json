@@ -1,0 +1,225 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						3,
+						5,
+						6
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "thirdparty/webgpu",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-thirdparty.webgpu-Debug-d1f8f4bd94a57b253645.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "thirdparty/webgpu"
+				},
+				{
+					"build" : "_deps/webgpu-backend-wgpu-build",
+					"jsonFile" : "directory-_deps.webgpu-backend-wgpu-build-Debug-fd6c743ccc92d9449543.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.0"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 2,
+					"source" : "cmake-build-debug/_deps/webgpu-backend-wgpu-src"
+				},
+				{
+					"build" : "thirdparty/glfw",
+					"childIndexes" : 
+					[
+						4
+					],
+					"jsonFile" : "directory-thirdparty.glfw-Debug-b70b8823df4ce67ea15e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "thirdparty/glfw"
+				},
+				{
+					"build" : "thirdparty/glfw/src",
+					"jsonFile" : "directory-thirdparty.glfw.src-Debug-8645e975b8712f331e3c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 3,
+					"source" : "thirdparty/glfw/src",
+					"targetIndexes" : 
+					[
+						1,
+						4
+					]
+				},
+				{
+					"build" : "thirdparty/glfw3webgpu",
+					"jsonFile" : "directory-thirdparty.glfw3webgpu-Debug-52d9bb2348ef5663eea6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "thirdparty/glfw3webgpu",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "thirdparty/imgui",
+					"jsonFile" : "directory-thirdparty.imgui-Debug-0444850e07c41bb574b3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "thirdparty/imgui",
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						3
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						5,
+						6
+					],
+					"name" : "GamePhysicsTemplate",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"childIndexes" : 
+					[
+						2
+					],
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "webgpu",
+					"parentIndex" : 0
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "webgpu-backend-wgpu",
+					"parentIndex" : 1
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3,
+						4
+					],
+					"name" : "GLFW",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Template::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Template-Debug-2ee54814efa04e6c6a21.json",
+					"name" : "Template",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "glfw::@66b0edeafaa5c4890854",
+					"jsonFile" : "target-glfw-Debug-a1547972d52204e37384.json",
+					"name" : "glfw",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "glfw3webgpu::@b734bd1ee3e74fba7043",
+					"jsonFile" : "target-glfw3webgpu-Debug-db110787f7baafa713e9.json",
+					"name" : "glfw3webgpu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "imgui::@8e2e809eb0e16a1b54e5",
+					"jsonFile" : "target-imgui-Debug-352a51a0c93c4c26dc37.json",
+					"name" : "imgui",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "update_mappings::@66b0edeafaa5c4890854",
+					"jsonFile" : "target-update_mappings-Debug-cab40850441619cc987c.json",
+					"name" : "update_mappings",
+					"projectIndex" : 3
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug",
+		"source" : "C:/Users/felly/CLionProjects/game-physics-template"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

@@ -1,0 +1,7 @@
+C:\Users\felly\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/felly/AppData/Local/Programs/CLion/bin/ninja/win/x64/ninja.exe -G Ninja -S C:\Users\felly\CLionProjects\game-physics-template -B C:\Users\felly\CLionProjects\game-physics-template\cmake-build-debug
+-- Using wgpu-native backend for WebGPU
+-- Using WebGPU runtime from 'C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug/_deps/webgpu-backend-wgpu-src/bin/windows-x86_64/wgpu_native.dll'
+-- Including Win32 support
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug
