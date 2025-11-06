@@ -7,7 +7,9 @@ void Scene1::init() {
     massPoints = {(Particle(glm::vec3(0.0), glm::vec3(-1.0,0.0,0.0), 4.0f)),
                   Particle(glm::vec3(0.0, 2.0, 0.0), glm::vec3(1.0,0.0,0.0), 4.0f)};
 
-    massPoints[0].connectTo(&massPoints[1], 40, 1);
+    forceGenerators = {
+            Spring(40, 1, &massPoints[0], &massPoints[1]),
+    };
 
     printf("Initial Values:\n");
     printInfoAboutParticles(massPoints);
@@ -21,10 +23,12 @@ void Scene1::init() {
     massPoints = {(Particle(glm::vec3(0.0), glm::vec3(-1.0,0.0,0.0), 4.0f)),
                   Particle(glm::vec3(0.0, 2.0, 0.0), glm::vec3(1.0,0.0,0.0), 4.0f)};
 
-    massPoints[0].connectTo(&massPoints[1], 40, 1);
+    forceGenerators = {
+            Spring(40, 1, &massPoints[0], &massPoints[1]),
+    };
 
     // call midpoint method
-    performMidpointEval();
+    performMidPointSimulation();
     printf("\nAfter 0.1s using Midpoint Method:\n");
     printInfoAboutParticles(massPoints);
 }
@@ -54,35 +58,48 @@ void Scene1::onGUI() {
 }
 
 void Scene1::performEulerStep() {
+    // let each spring add its force
+    for (int i = 0; i < forceGenerators.size(); ++i) {
+        forceGenerators[i].updateForce(1);
+    }
     // perform it for every particle!
     for (int i = 0; i < massPoints.size(); ++i) {
         // 1. Calculate accerleration from forces
-        glm::vec3 acceleration;
-        glm::vec3 totalInternalForce = massPoints[i].getTotalInternalForce(1);
-        massPoints[i].acceleration = totalInternalForce / massPoints[i].mass;
+        massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass);
         // 2. Update position
         massPoints[i].position = massPoints[i].position + massPoints[i].velocity * timeStep;
         // 3. Update velocity
         massPoints[i].velocity = massPoints[i].velocity + massPoints[i].acceleration * timeStep;
+
+        // clear internal force
+        massPoints[i].clearInternalForce();
     }
 }
 
-void Scene1::performMidpointEval() {
+void Scene1::performMidPointSimulation(){
     glm::vec3 acceleration;
-    glm::vec3 totalInternalForce;
+    // let each spring add its force
+    for (int i = 0; i < forceGenerators.size(); ++i) {
+        forceGenerators[i].updateForce(1);
+    }
     // perform mid point step for every particle!
     for (int i = 0; i < massPoints.size(); ++i) {
         // 0. Get acceleration
-        totalInternalForce = massPoints[i].getTotalInternalForce(1);
-        massPoints[i].acceleration = totalInternalForce / massPoints[i].mass;
+        massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass);
         // 1. Calculate half timestep velocity and position
         massPoints[i].positionMid = massPoints[i].position + massPoints[i].velocity * (timeStep/2.0f);
         massPoints[i].velocityMid = massPoints[i].velocity + massPoints[i].acceleration * (timeStep/2.0f);
+
+        // clear internal force
+        massPoints[i].clearInternalForce();
+    }
+    // let each spring add its force
+    for (int i = 0; i < forceGenerators.size(); ++i) {
+        forceGenerators[i].updateForce(2);
     }
     for (int i = 0; i < massPoints.size(); ++i) {
         // compute midpoint accelerationf for each particle
-        totalInternalForce = massPoints[i].getTotalInternalForce(2);
-        massPoints[i].acceleration = totalInternalForce / massPoints[i].mass;
+        massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass);
     }
     // actually update every particle
     for (int i = 0; i < massPoints.size(); ++i) {
@@ -90,6 +107,9 @@ void Scene1::performMidpointEval() {
         massPoints[i].position = massPoints[i].position + massPoints[i].velocityMid*timeStep;
         // 2. Update velocity with midpoint acceleration
         massPoints[i].velocity = massPoints[i].velocity + massPoints[i].acceleration * timeStep;
+
+        // clear internal force
+        massPoints[i].clearInternalForce();
     }
 }
 

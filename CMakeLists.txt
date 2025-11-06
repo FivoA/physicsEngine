@@ -93,6 +93,12 @@ add_executable(Template
 		Scenes/Scene2.h
 		Scenes/Scene3.cpp
 		Scenes/Scene3.h
+		Scenes/ForceGenerator.cpp
+		Scenes/ForceGenerator.h
+		Scenes/Spring.cpp
+		Scenes/Spring.h
+		Scenes/Plane.cpp
+		Scenes/Plane.h
 )
 
 if(UNIX AND NOT APPLE)

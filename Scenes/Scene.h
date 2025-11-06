@@ -11,6 +11,7 @@
 class Scene
 {
 public:
+    bool isSimulating = false;
     /// @brief Initialize the scene. Gets called every time the scene is switched to.
     virtual void init() {};
     /// @brief Simulate a step in the scene. Gets called every frame before onDraw.

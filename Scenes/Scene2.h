@@ -7,13 +7,14 @@
 
 #include "Scene.h"
 #include "Particle.h"
+#include "Spring.h"
 
 class Scene2: public Scene {
     std::vector<Particle> massPoints;
+    std::vector<Spring> forceGenerators;
 
     float timeStep = 0.05f;
-    int stepsToSimulate = 1;
-
+    float accTime =0.0f;
     // give this new scene its own onDraw and simulateStep method by overriding the parent Scene's one
     virtual void onDraw(Renderer &renderer) override;
     virtual void simulateStep() override;
@@ -23,7 +24,6 @@ class Scene2: public Scene {
     void performEulerStep();
 
     static void printInfoAboutParticles(std::vector<Particle> massPoints);
-    void StarSimulation();
 };
 
 

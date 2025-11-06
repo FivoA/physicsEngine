@@ -3,11 +3,12 @@
 #include <random>
 #include <imgui.h>
 #include "Particle.h"
-
+#include "Spring.h"
 
 
 class Scene1: public Scene{
     std::vector<Particle> massPoints;
+    std::vector<Spring> forceGenerators;
 
     float timeStep = 0.1f;
 
@@ -18,7 +19,7 @@ class Scene1: public Scene{
     virtual void onGUI() override;
 
     void performEulerStep();
-    void performMidpointEval();
+    void performMidPointSimulation();
 
     static void printInfoAboutParticles(std::vector<Particle> massPoints);
 };
