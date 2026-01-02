@@ -1,61 +1,21 @@
-//
-// Created by felly on 05/11/2025.
-//
-
 #include "Scene4.h"
 #include <imgui.h>
 #include "Spring.h"
 #include "Plane.h"
 
 void Scene4::init() {
-    boundingPlanes = {
-        Plane(glm::vec3(0.0f, 0.0f, -2.5f), glm::vec3(0.0f, 0.0f, 1.0f)), //bottom plane
-        Plane(glm::vec3(0.0f, 0.0f, 2.5f), glm::vec3(0.0f, 0.0f, -1.0f)), // top plane
-        Plane(glm::vec3(0.0f, -2.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)), // left plane
-        Plane(glm::vec3(0.0f, 2.5f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)), // right plane
-        Plane(glm::vec3(2.5f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f)), // front plane
-        Plane(glm::vec3(-2.5f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)), // back plane
-    };
-    massPoints = {
-            Particle(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 0.0f), 4.0f), // front top right 0
-            Particle(glm::vec3(0.0f, -2.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // front top left 1
-            Particle(glm::vec3(0.0f, -2.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // front bottom left 2
-            Particle(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // front bottom right 3
-            Particle(glm::vec3(-2.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // back top right 4
-            Particle(glm::vec3(-2.0f, -2.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // back top left 5
-            Particle(glm::vec3(-2.0f, -2.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // back bottom left 6
-            Particle(glm::vec3(-2.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // back bottom right 7
-            Particle(glm::vec3(-1.0f, -1.0f, -2.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f), // Bottom peak 8
-            Particle(glm::vec3(-1.0f, -1.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), 4.0f) // Top peak 9
-    };
-    forceGenerators = {
-            Spring(40, glm::length(massPoints[0].position - massPoints[1].position), &massPoints[0], &massPoints[1]),
-            Spring(40, glm::length(massPoints[0].position - massPoints[1].position), &massPoints[0], &massPoints[3]),
-            Spring(40, glm::length(massPoints[0].position - massPoints[4].position), &massPoints[0], &massPoints[4]),
-            Spring(40, glm::length(massPoints[0].position - massPoints[9].position), &massPoints[0], &massPoints[9]),
-            Spring(40, glm::length(massPoints[1].position - massPoints[2].position), &massPoints[1], &massPoints[2]),
-            Spring(40, glm::length(massPoints[1].position - massPoints[5].position), &massPoints[1], &massPoints[5]),
-            Spring(40, glm::length(massPoints[1].position - massPoints[9].position), &massPoints[1], &massPoints[9]),
-            Spring(40, glm::length(massPoints[2].position - massPoints[3].position), &massPoints[2], &massPoints[3]),
-            Spring(40, glm::length(massPoints[2].position - massPoints[6].position), &massPoints[2], &massPoints[6]),
-            Spring(40, glm::length(massPoints[2].position - massPoints[8].position), &massPoints[2], &massPoints[8]),
-            Spring(40, glm::length(massPoints[3].position - massPoints[7].position), &massPoints[3], &massPoints[7]),
-            Spring(40, glm::length(massPoints[3].position - massPoints[8].position), &massPoints[3], &massPoints[8]),
-            Spring(40, glm::length(massPoints[4].position - massPoints[5].position), &massPoints[4], &massPoints[5]),
-            Spring(40, glm::length(massPoints[4].position - massPoints[7].position), &massPoints[4], &massPoints[7]),
-            Spring(40, glm::length(massPoints[4].position - massPoints[9].position), &massPoints[4], &massPoints[9]),
-            Spring(40, glm::length(massPoints[5].position - massPoints[9].position), &massPoints[5], &massPoints[9]),
-            Spring(40, glm::length(massPoints[6].position - massPoints[5].position), &massPoints[6], &massPoints[5]),
-            Spring(40, glm::length(massPoints[6].position - massPoints[7].position), &massPoints[6], &massPoints[7]),
-            Spring(40, glm::length(massPoints[6].position - massPoints[8].position), &massPoints[6], &massPoints[8]),
-            Spring(40, glm::length(massPoints[7].position - massPoints[8].position), &massPoints[7], &massPoints[8]),
-    };
+    massPoints = {};
+    // TO USE, REPLACE WITH OWN PATH OF OBJ FILE!!
+    loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Chevrolet_Camaro_SS_Low.obj)");
 }
 
 void Scene4::onGUI() {
     ImGui::SliderFloat("Timestep: ", &timeStep, 0.001f, 0.01f);
     ImGui::Combo("Select Simulation", &simulationIndex, simulations, 3);
-    ImGui::Checkbox("Toggle Gravity", &gravityActive);
+    ImGui::InputFloat("Gravity X:", &gravity.x);
+    ImGui::InputFloat("Gravity Y:", &gravity.y);
+    ImGui::InputFloat("Gravity Z:", &gravity.z);
+    ImGui::Checkbox("Toggle the selected gravity", &gravityActive);
     auto startSim = ImGui::Button("Toggle Simulation");
     if(startSim){
         isSimulating = !isSimulating;
@@ -88,12 +48,9 @@ void Scene4::performMidPointSimulation(){
     for (int i = 0; i < forceGenerators.size(); ++i) {
         forceGenerators[i].updateForce(2);
     }
-    for (int i = 0; i < massPoints.size(); ++i) {
-        // compute midpoint accelerationf for each particle
-        massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass) + (gravityActive ? gravity: glm::vec3(0));
-    }
     // actually update every particle
     for (int i = 0; i < massPoints.size(); ++i) {
+        massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass) + (gravityActive ? gravity: glm::vec3(0));
         // 1. Update position with midpoint velocity
         massPoints[i].position = massPoints[i].position + massPoints[i].velocityMid*timeStep;
         // 2. Update velocity with midpoint acceleration
@@ -140,7 +97,8 @@ void Scene4::performLeapFrog() {
         // 1. Calculate accerleration from forces
         massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass) + (gravityActive ? gravity: glm::vec3(0));
 
-        // 2. init v(t-h/2) if not done before
+        // 2. Init v(t-h/2) if not done before;
+        // NOTE FOR TUTOR: We don't assume that v(t-h/2) is v(0), we decided to make a reverse prediction here to calculate it :)
         if(!massPoints[i].leapfroginit){
             massPoints[i].velocityHalfPrev = massPoints[i].velocity - massPoints[i].acceleration * timeStep  * 0.5f;
             massPoints[i].leapfroginit = true;
@@ -167,10 +125,9 @@ void Scene4::onDraw(Renderer &renderer) {
     for (int i = 0; i < massPoints.size(); ++i) {
         // Draw the particle
         renderer.drawSphere(massPoints[i].position, 0.1, glm::vec4(1,i * 0.1,0,1));
-        // Draw all connections (YES I AM AWARE WE DO THIS TWICE PER CONNECTION BUT I DONT CARE SINCE WE DONT HAVE A LOT OF PARTICLES)
-        for(Spring spr: forceGenerators){
-            renderer.drawLine(spr.a->position, spr.b->position, glm::vec4(1,0,1,1));
-        }
+    }
+    for(Spring spr: forceGenerators){
+        renderer.drawLine(spr.a->position, spr.b->position, glm::vec4(1,0,1,1));
     }
     for (int i = 0; i < boundingPlanes.size(); ++i) {
         renderer.drawSphere(boundingPlanes[i].uniquePoint, 0.05, glm::vec4(1,1,0, 0.15));
@@ -189,10 +146,54 @@ void Scene4::simulateStep() {
             } else {
                 performLeapFrog();
             }
-
             accTime = 0.0f;
         }
     }
+}
+
+void Scene4::loadObj(std::string path) {
+    std::string text;
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        printf("Failed to open file");
+        return;
+    }
+    while(std::getline(file, text)){
+        if(text.rfind("v ", 0) == 0) {
+            printf("Vertex:\n");
+            float x, y, z;
+            char tag;
+            std::istringstream iss(text);
+            iss >> tag >> x >> y >> z;
+            std::swap(y,z); // swap to align rotation since coordinate systems might be weird. This is hardcoded but all models i could find so far had this issue
+            printf("x: %f , y: %f, z: %f \n", x,y,z);
+            massPoints.emplace_back(glm::vec3(x,y,z), glm::vec3(0), 1.0f);
+        }
+    }
+    file.clear();
+    file.seekg(0, std::ios::beg);
+    while(std::getline(file, text)){
+        if(text.rfind("f ", 0) == 0) {
+            printf("Face\n");
+            std::string x, y, z;
+            char tag;
+            std::istringstream iss(text);
+            //float stiff, float rL, Particle* a, Particle* b
+            iss >> tag >> x >> y >> z;
+            auto parseIndex = [](const std::string& s){
+                return std::stoi(s.substr(0,s.find('/'))) -1;
+            };
+            int v1 = parseIndex(x);
+            int v2 = parseIndex(y);
+            int v3 = parseIndex(z);
+            forceGenerators.emplace_back(1.0f, 2.0f, &massPoints[v1], &massPoints[v2]);
+            forceGenerators.emplace_back(1.0f, 2.0f, &massPoints[v2], &massPoints[v3]);
+            forceGenerators.emplace_back(1.0f, 2.0f, &massPoints[v3], &massPoints[v1]);
+            faceReferences.emplace_back(v1,v2,v3); // Purpose: to keep track of faces for rotation recomputation
+        }
+    }
+
+    file.close();
 }
 
 

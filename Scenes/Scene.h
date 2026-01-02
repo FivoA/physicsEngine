@@ -1,5 +1,7 @@
 #pragma once
 #include "Renderer.h"
+#include <iostream>
+#include <fstream>
 
 /// @brief Scene base class. **Run `cmake . -B build` after adding new files to the scenes folder**
 ///

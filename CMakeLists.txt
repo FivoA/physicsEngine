@@ -89,10 +89,6 @@ add_executable(Template
 		Scenes/Scene4.h
 		Scenes/Particle.cpp
 		Scenes/Particle.h
-		Scenes/Scene2.cpp
-		Scenes/Scene2.h
-		Scenes/Scene3.cpp
-		Scenes/Scene3.h
 		Scenes/ForceGenerator.cpp
 		Scenes/ForceGenerator.h
 		Scenes/Spring.cpp

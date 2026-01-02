@@ -1,7 +1,3 @@
-//
-// Created by felly on 05/11/2025.
-//
-
 #ifndef GAMEPHYSICSTEMPLATE_SCENE4_H
 #define GAMEPHYSICSTEMPLATE_SCENE4_H
 
@@ -16,7 +12,7 @@ class Scene4: public Scene {
     std::vector<Particle> massPoints;
     std::vector<Spring> forceGenerators;
     std::vector<Plane> boundingPlanes;
-
+    std::vector<glm::vec3> faceReferences;
     float timeStep = 0.05f;
 
     bool gravityActive = false;
@@ -35,6 +31,8 @@ class Scene4: public Scene {
     void performMidPointSimulation();
     void performLeapFrog();
     void StarSimulation();
+
+    virtual void loadObj(std::string path);
 };
 
 

@@ -1,7 +1,3 @@
-//
-// Created by felly on 06/11/2025.
-//
-
 #ifndef GAMEPHYSICSTEMPLATE_SPRING_H
 #define GAMEPHYSICSTEMPLATE_SPRING_H
 
