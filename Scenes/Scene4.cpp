@@ -2,6 +2,7 @@
 #include <imgui.h>
 #include "Spring.h"
 #include "Plane.h"
+#include "Collsion.h"
 
 void Scene4::init() {
     massPoints = {};
@@ -121,6 +122,8 @@ void Scene4::performLeapFrog() {
 }
 
 void Scene4::onDraw(Renderer &renderer) {
+    renderer.drawCube(box.position, box.rotation, box.scale, box.color);
+
     renderer.drawWireCube(glm::vec3(0), glm::vec3(5), glm::vec3(1));
     for (int i = 0; i < massPoints.size(); ++i) {
         // Draw the particle
@@ -136,9 +139,20 @@ void Scene4::onDraw(Renderer &renderer) {
 
 float accTime = 0.0f;
 void Scene4::simulateStep() {
-    if(isSimulating) {
+    if(isSimulating) {       
         accTime += ImGui::GetIO().DeltaTime;
         if (accTime >= timeStep) {
+            // perform collision detection
+            CheckCollisionsBox2Particle(massPoints);
+            // TODO: replace this with correct particle set determined by accelaration algorithm
+
+            // perform physics steps:
+            // box step
+            box.ApplyForce(gravity * box.mass, box.position, timeStep);
+            box.SimulateStep(timeStep);
+
+
+            // mass spring step
             if (simulationIndex == 0) {
                 performEulerStep();
             } else if (simulationIndex == 1) {
@@ -147,6 +161,30 @@ void Scene4::simulateStep() {
                 performLeapFrog();
             }
             accTime = 0.0f;
+        }
+    }
+}
+
+void Scene4::CheckCollisionsBox2Particle(std::vector<Particle> particleSet) {
+    box.CalculateModelMatrix();
+    for (Particle p : particleSet) {
+        CollInfo collision = CheckCollisionParticleBox(p.position, box.modelMatrix);
+        if (collision.isColliding) {
+            glm::vec3 v_rel = p.velocity - box.CalculateVelocityOfWorldPoint(p.position);
+            glm::vec3 xBox = p.position - box.position; // XBOX OMG xDDDDDDDDDDDDDDDDDDD
+            float dvn = glm::dot(v_rel, collision.normal);
+            if (dvn <= 0) {
+                float q = -(1.f + c) * glm::dot(v_rel, collision.normal);
+                float d = (1.f / p.mass) + box.GetInverseMass() +
+                glm::dot(
+                    (glm::cross(box.GetInverseInertiaTensor() * glm::cross(xBox, collision.normal), xBox)),
+                    collision.normal
+                );
+                float impuls = q / d;
+                printf("Impuls: %f\n\n", impuls);
+                // TODO: apply impuls to mass point p
+                box.ApplyImpuls(-impuls * collision.normal, p.position);
+            }
         }
     }
 }
@@ -192,8 +230,6 @@ void Scene4::loadObj(std::string path) {
             faceReferences.emplace_back(v1,v2,v3); // Purpose: to keep track of faces for rotation recomputation
         }
     }
-
+    
     file.close();
 }
-
-

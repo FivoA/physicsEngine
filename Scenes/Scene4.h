@@ -6,6 +6,7 @@
 #include "ForceGenerator.h"
 #include "Spring.h"
 #include "Plane.h"
+#include "Box.h"
 
 class Scene4: public Scene {
 
@@ -14,6 +15,9 @@ class Scene4: public Scene {
     std::vector<Plane> boundingPlanes;
     std::vector<glm::vec3> faceReferences;
     float timeStep = 0.05f;
+
+    Box box = Box(1,1,1,1);
+    float c = 1.0f;
 
     bool gravityActive = false;
     glm::vec3 gravity = glm::vec3(0.0f,0.0f,-9.81f);
@@ -31,6 +35,7 @@ class Scene4: public Scene {
     void performMidPointSimulation();
     void performLeapFrog();
     void StarSimulation();
+    void CheckCollisionsBox2Particle(std::vector<Particle> particleSet);
 
     virtual void loadObj(std::string path);
 };
