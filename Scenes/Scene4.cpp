@@ -7,8 +7,8 @@
 void Scene4::init() {
     massPoints = {};
     // TO USE, REPLACE WITH OWN PATH OF OBJ FILE!!
-    //loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Chevrolet_Camaro_SS_Low.obj)");
-    massPoints.push_back(Particle(glm::vec3(1,0,0.1f), glm::vec3(-1,0,0), 2.f));
+    loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Chevrolet_Camaro_SS_Low.obj)");
+    //massPoints.push_back(Particle(glm::vec3(1,0,0.1f), glm::vec3(-1,0,0), 2.f));
     box.rotation = glm::normalize(glm::quat(glm::vec3(0, 0.785398f, 0)));
 }
 
@@ -192,7 +192,6 @@ void Scene4::CheckCollisionsBox2Particle(std::vector<Particle> &particleSet) {
 }
 
 void Scene4::loadObj(std::string path) {
-    /*
     std::string text;
     std::ifstream file(path);
     if (!file.is_open()) {
@@ -235,5 +234,4 @@ void Scene4::loadObj(std::string path) {
     }
     
     file.close();
-    */
 }
