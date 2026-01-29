@@ -35,7 +35,7 @@ class Scene4: public Scene {
     void performMidPointSimulation();
     void performLeapFrog();
     void StarSimulation();
-    void CheckCollisionsBox2Particle(std::vector<Particle> particleSet);
+    void CheckCollisionsBox2Particle(std::vector<Particle> &particleSet);
 
     virtual void loadObj(std::string path);
 };

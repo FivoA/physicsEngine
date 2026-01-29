@@ -7,7 +7,9 @@
 void Scene4::init() {
     massPoints = {};
     // TO USE, REPLACE WITH OWN PATH OF OBJ FILE!!
-    loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Chevrolet_Camaro_SS_Low.obj)");
+    //loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Chevrolet_Camaro_SS_Low.obj)");
+    massPoints.push_back(Particle(glm::vec3(1,0,0.1f), glm::vec3(-1,0,0), 2.f));
+    box.rotation = glm::normalize(glm::quat(glm::vec3(0, 0.785398f, 0)));
 }
 
 void Scene4::onGUI() {
@@ -148,7 +150,7 @@ void Scene4::simulateStep() {
 
             // perform physics steps:
             // box step
-            box.ApplyForce(gravity * box.mass, box.position, timeStep);
+            if (gravityActive) box.ApplyForce(gravity * box.mass, box.position, timeStep);
             box.SimulateStep(timeStep);
 
 
@@ -165,31 +167,32 @@ void Scene4::simulateStep() {
     }
 }
 
-void Scene4::CheckCollisionsBox2Particle(std::vector<Particle> particleSet) {
+void Scene4::CheckCollisionsBox2Particle(std::vector<Particle> &particleSet) {
     box.CalculateModelMatrix();
-    for (Particle p : particleSet) {
-        CollInfo collision = CheckCollisionParticleBox(p.position, box.modelMatrix);
+    for (int i = 0; i < particleSet.size(); i++) {
+        
+        CollInfo collision = CheckCollisionParticleBox(particleSet[i].position, box.modelMatrix);
         if (collision.isColliding) {
-            glm::vec3 v_rel = p.velocity - box.CalculateVelocityOfWorldPoint(p.position);
-            glm::vec3 xBox = p.position - box.position; // XBOX OMG xDDDDDDDDDDDDDDDDDDD
+            glm::vec3 v_rel = particleSet[i].velocity - box.CalculateVelocityOfWorldPoint(particleSet[i].position);
+            glm::vec3 xBox = particleSet[i].position - box.position; // XBOX OMG xDDDDDDDDDDDDDDDDDDD
             float dvn = glm::dot(v_rel, collision.normal);
             if (dvn <= 0) {
                 float q = -(1.f + c) * glm::dot(v_rel, collision.normal);
-                float d = (1.f / p.mass) + box.GetInverseMass() +
+                float d = (1.f / particleSet[i].mass) + box.GetInverseMass() +
                 glm::dot(
                     (glm::cross(box.GetInverseInertiaTensor() * glm::cross(xBox, collision.normal), xBox)),
                     collision.normal
                 );
                 float impuls = q / d;
-                printf("Impuls: %f\n\n", impuls);
-                // TODO: apply impuls to mass point p
-                box.ApplyImpuls(-impuls * collision.normal, p.position);
+                particleSet[i].velocity += impuls * collision.normal / particleSet[i].mass;
+                box.ApplyImpuls(-impuls * collision.normal, particleSet[i].position);
             }
         }
     }
 }
 
 void Scene4::loadObj(std::string path) {
+    /*
     std::string text;
     std::ifstream file(path);
     if (!file.is_open()) {
@@ -232,4 +235,5 @@ void Scene4::loadObj(std::string path) {
     }
     
     file.close();
+    */
 }
