@@ -95,6 +95,7 @@ add_executable(Template
 		Scenes/Spring.h
 		Scenes/Plane.cpp
 		Scenes/Plane.h
+		Scenes/Box.cpp
 )
 
 if(UNIX AND NOT APPLE)

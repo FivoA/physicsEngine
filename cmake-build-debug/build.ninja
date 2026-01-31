@@ -161,9 +161,33 @@ build CMakeFiles/Template.dir/Scenes/Plane.cpp.obj: CXX_COMPILER__Template_unsca
   OBJECT_DIR = CMakeFiles\Template.dir
   OBJECT_FILE_DIR = CMakeFiles\Template.dir\Scenes
 
+build CMakeFiles/Template.dir/Scenes/Box.cpp.obj: CXX_COMPILER__Template_unscanned_Debug C$:/Users/felly/CLionProjects/game-physics-template/Scenes/Box.cpp || cmake_object_order_depends_target_Template
+  DEFINES = -DGLM_FORCE_DEPTH_ZERO_TO_ONE -DGLM_FORCE_RIGHT_HANDED -DWEBGPU_BACKEND_WGPU -DWGPU_GPU_HIGH_PERFORMANCE=\"ON\"
+  DEP_FILE = CMakeFiles\Template.dir\Scenes\Box.cpp.obj.d
+  FLAGS = -g -std=c++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/felly/CLionProjects/game-physics-template/. -IC:/Users/felly/CLionProjects/game-physics-template/src -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty -IC:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw/include -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw3webgpu/. -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/imgui/. -isystem C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug/_deps/webgpu-backend-wgpu-src/include
+  OBJECT_DIR = CMakeFiles\Template.dir
+  OBJECT_FILE_DIR = CMakeFiles\Template.dir\Scenes
+
+build CMakeFiles/Template.dir/Scenes/Collision.cpp.obj: CXX_COMPILER__Template_unscanned_Debug C$:/Users/felly/CLionProjects/game-physics-template/Scenes/Collision.cpp || cmake_object_order_depends_target_Template
+  DEFINES = -DGLM_FORCE_DEPTH_ZERO_TO_ONE -DGLM_FORCE_RIGHT_HANDED -DWEBGPU_BACKEND_WGPU -DWGPU_GPU_HIGH_PERFORMANCE=\"ON\"
+  DEP_FILE = CMakeFiles\Template.dir\Scenes\Collision.cpp.obj.d
+  FLAGS = -g -std=c++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/felly/CLionProjects/game-physics-template/. -IC:/Users/felly/CLionProjects/game-physics-template/src -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty -IC:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw/include -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw3webgpu/. -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/imgui/. -isystem C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug/_deps/webgpu-backend-wgpu-src/include
+  OBJECT_DIR = CMakeFiles\Template.dir
+  OBJECT_FILE_DIR = CMakeFiles\Template.dir\Scenes
+
 build CMakeFiles/Template.dir/Scenes/Scene.cpp.obj: CXX_COMPILER__Template_unscanned_Debug C$:/Users/felly/CLionProjects/game-physics-template/Scenes/Scene.cpp || cmake_object_order_depends_target_Template
   DEFINES = -DGLM_FORCE_DEPTH_ZERO_TO_ONE -DGLM_FORCE_RIGHT_HANDED -DWEBGPU_BACKEND_WGPU -DWGPU_GPU_HIGH_PERFORMANCE=\"ON\"
   DEP_FILE = CMakeFiles\Template.dir\Scenes\Scene.cpp.obj.d
+  FLAGS = -g -std=c++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/felly/CLionProjects/game-physics-template/. -IC:/Users/felly/CLionProjects/game-physics-template/src -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty -IC:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw/include -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw3webgpu/. -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/imgui/. -isystem C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug/_deps/webgpu-backend-wgpu-src/include
+  OBJECT_DIR = CMakeFiles\Template.dir
+  OBJECT_FILE_DIR = CMakeFiles\Template.dir\Scenes
+
+build CMakeFiles/Template.dir/Scenes/TestScene.cpp.obj: CXX_COMPILER__Template_unscanned_Debug C$:/Users/felly/CLionProjects/game-physics-template/Scenes/TestScene.cpp || cmake_object_order_depends_target_Template
+  DEFINES = -DGLM_FORCE_DEPTH_ZERO_TO_ONE -DGLM_FORCE_RIGHT_HANDED -DWEBGPU_BACKEND_WGPU -DWGPU_GPU_HIGH_PERFORMANCE=\"ON\"
+  DEP_FILE = CMakeFiles\Template.dir\Scenes\TestScene.cpp.obj.d
   FLAGS = -g -std=c++17 -fdiagnostics-color=always
   INCLUDES = -IC:/Users/felly/CLionProjects/game-physics-template/. -IC:/Users/felly/CLionProjects/game-physics-template/src -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty -IC:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw/include -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/glfw3webgpu/. -IC:/Users/felly/CLionProjects/game-physics-template/thirdparty/imgui/. -isystem C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug/_deps/webgpu-backend-wgpu-src/include
   OBJECT_DIR = CMakeFiles\Template.dir
@@ -225,7 +249,7 @@ build CMakeFiles/Template.dir/src/util/CollisionDetection.cpp.obj: CXX_COMPILER_
 #############################################
 # Link the executable Template.exe
 
-build Template.exe: CXX_EXECUTABLE_LINKER__Template_Debug CMakeFiles/Template.dir/src/implementations.cpp.obj CMakeFiles/Template.dir/src/main.cpp.obj CMakeFiles/Template.dir/src/Renderer.cpp.obj CMakeFiles/Template.dir/src/Primitives.cpp.obj CMakeFiles/Template.dir/src/ResourceManager.cpp.obj CMakeFiles/Template.dir/src/Simulator.cpp.obj CMakeFiles/Template.dir/src/Camera.cpp.obj CMakeFiles/Template.dir/src/Colormap.cpp.obj CMakeFiles/Template.dir/src/PathFinder.cpp.obj CMakeFiles/Template.dir/Scenes/Scene4.cpp.obj CMakeFiles/Template.dir/Scenes/Particle.cpp.obj CMakeFiles/Template.dir/Scenes/ForceGenerator.cpp.obj CMakeFiles/Template.dir/Scenes/Spring.cpp.obj CMakeFiles/Template.dir/Scenes/Plane.cpp.obj CMakeFiles/Template.dir/Scenes/Scene.cpp.obj CMakeFiles/Template.dir/src/pipelines/ImagePipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/InstancingPipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/LinePipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/Pipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/PostProcessingPipeline.cpp.obj CMakeFiles/Template.dir/src/util/CollisionDetection.cpp.obj | thirdparty/glfw/src/libglfw3.a thirdparty/glfw3webgpu/libglfw3webgpu.a thirdparty/imgui/libimgui.a thirdparty/glfw/src/libglfw3.a _deps/webgpu-backend-wgpu-src/bin/windows-x86_64/wgpu_native.dll.lib || thirdparty/glfw3webgpu/libglfw3webgpu.a thirdparty/glfw/src/libglfw3.a thirdparty/imgui/libimgui.a
+build Template.exe: CXX_EXECUTABLE_LINKER__Template_Debug CMakeFiles/Template.dir/src/implementations.cpp.obj CMakeFiles/Template.dir/src/main.cpp.obj CMakeFiles/Template.dir/src/Renderer.cpp.obj CMakeFiles/Template.dir/src/Primitives.cpp.obj CMakeFiles/Template.dir/src/ResourceManager.cpp.obj CMakeFiles/Template.dir/src/Simulator.cpp.obj CMakeFiles/Template.dir/src/Camera.cpp.obj CMakeFiles/Template.dir/src/Colormap.cpp.obj CMakeFiles/Template.dir/src/PathFinder.cpp.obj CMakeFiles/Template.dir/Scenes/Scene4.cpp.obj CMakeFiles/Template.dir/Scenes/Particle.cpp.obj CMakeFiles/Template.dir/Scenes/ForceGenerator.cpp.obj CMakeFiles/Template.dir/Scenes/Spring.cpp.obj CMakeFiles/Template.dir/Scenes/Plane.cpp.obj CMakeFiles/Template.dir/Scenes/Box.cpp.obj CMakeFiles/Template.dir/Scenes/Collision.cpp.obj CMakeFiles/Template.dir/Scenes/Scene.cpp.obj CMakeFiles/Template.dir/Scenes/TestScene.cpp.obj CMakeFiles/Template.dir/src/pipelines/ImagePipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/InstancingPipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/LinePipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/Pipeline.cpp.obj CMakeFiles/Template.dir/src/pipelines/PostProcessingPipeline.cpp.obj CMakeFiles/Template.dir/src/util/CollisionDetection.cpp.obj | thirdparty/glfw/src/libglfw3.a thirdparty/glfw3webgpu/libglfw3webgpu.a thirdparty/imgui/libimgui.a thirdparty/glfw/src/libglfw3.a _deps/webgpu-backend-wgpu-src/bin/windows-x86_64/wgpu_native.dll.lib || thirdparty/glfw3webgpu/libglfw3webgpu.a thirdparty/glfw/src/libglfw3.a thirdparty/imgui/libimgui.a
   FLAGS = -g
   LINK_LIBRARIES = thirdparty/glfw/src/libglfw3.a  thirdparty/glfw3webgpu/libglfw3webgpu.a  thirdparty/imgui/libimgui.a  thirdparty/glfw/src/libglfw3.a  _deps/webgpu-backend-wgpu-src/bin/windows-x86_64/wgpu_native.dll.lib  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Template.dir

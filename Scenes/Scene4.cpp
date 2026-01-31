@@ -7,18 +7,34 @@
 void Scene4::init() {
     massPoints = {};
     // TO USE, REPLACE WITH OWN PATH OF OBJ FILE!!
-    loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Chevrolet_Camaro_SS_Low.obj)");
-    //massPoints.push_back(Particle(glm::vec3(1,0,0.1f), glm::vec3(-1,0,0), 2.f));
-    box.rotation = glm::normalize(glm::quat(glm::vec3(0, 0.785398f, 0)));
+    loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Car.obj)");
+    box = Box(1.0f, 10.0f, 10.0f, -1.0f); //made mass negative to simulate as wall!
+    box.color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+    box.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(0, 0, 1));
+    box.position = glm::vec3(0.0f, 5.0f, 0.0f);
+    crashVelocity = glm::vec3(0.0f, 15.0f, 0.0f);
+    for(auto& p: massPoints){
+        p.velocity = crashVelocity;
+    }
+
+    c = 0.25f;
+    cellSize = 2.0f;
 }
 
 void Scene4::onGUI() {
-    ImGui::SliderFloat("Timestep: ", &timeStep, 0.001f, 0.01f);
+    ImGui::SliderFloat("Timestep: ", &timeStep, 0.001f, 0.005f);
     ImGui::Combo("Select Simulation", &simulationIndex, simulations, 3);
+    ImGui::Combo("Select Collision Acceleration", &accelerationIndex, accelerations, 2);
+
     ImGui::InputFloat("Gravity X:", &gravity.x);
     ImGui::InputFloat("Gravity Y:", &gravity.y);
     ImGui::InputFloat("Gravity Z:", &gravity.z);
     ImGui::Checkbox("Toggle the selected gravity", &gravityActive);
+
+    ImGui::InputFloat("Vehicle Velocity (ONLY INPUT POSITIVE VALUE):", &crashVelocity.y);
+    ImGui::InputFloat("Coefficient of Restitution:", &c);
+    ImGui::InputFloat("Grid Cell Size:", &cellSize);
+
     auto startSim = ImGui::Button("Toggle Simulation");
     if(startSim){
         isSimulating = !isSimulating;
@@ -126,10 +142,9 @@ void Scene4::performLeapFrog() {
 void Scene4::onDraw(Renderer &renderer) {
     renderer.drawCube(box.position, box.rotation, box.scale, box.color);
 
-    renderer.drawWireCube(glm::vec3(0), glm::vec3(5), glm::vec3(1));
     for (int i = 0; i < massPoints.size(); ++i) {
         // Draw the particle
-        renderer.drawSphere(massPoints[i].position, 0.1, glm::vec4(1,i * 0.1,0,1));
+        renderer.drawSphere(massPoints[i].position, 0.05, glm::vec4(1,i * 0.1,0,1));
     }
     for(Spring spr: forceGenerators){
         renderer.drawLine(spr.a->position, spr.b->position, glm::vec4(1,0,1,1));
@@ -145,13 +160,25 @@ void Scene4::simulateStep() {
         accTime += ImGui::GetIO().DeltaTime;
         if (accTime >= timeStep) {
             // perform collision detection
-            CheckCollisionsBox2Particle(massPoints);
-            // TODO: replace this with correct particle set determined by accelaration algorithm
+            std::vector<int> candidates;
+            if(accelerationIndex==0) {
+                //using spatial grid as acceleration to create candidates
+                updateSpacialGrid();
+                candidates = getParticlesNearBox();
+            }else{
+                //using sdf as acceleration
+                //pre filtering indices where sdf < threshold
+                for (int i = 0; i < massPoints.size(); ++i) {
+                    if (boxSDF(massPoints[i].position) < 1.0f) { // 1.0f is small buffer
+                        candidates.push_back(i);
+                    }
+                }
+            }
+            CheckCollisionsBox2Particle(candidates);
 
-            // perform physics steps:
-            // box step
-            if (gravityActive) box.ApplyForce(gravity * box.mass, box.position, timeStep);
-            box.SimulateStep(timeStep);
+            // box step; Note: we dont need this really since box is static anyway
+            //if (gravityActive) box.ApplyForce(gravity * box.mass, box.position, timeStep);
+            //box.SimulateStep(timeStep);
 
 
             // mass spring step
@@ -167,25 +194,25 @@ void Scene4::simulateStep() {
     }
 }
 
-void Scene4::CheckCollisionsBox2Particle(std::vector<Particle> &particleSet) {
+void Scene4::CheckCollisionsBox2Particle(const std::vector<int>& particleIndices) {
     box.CalculateModelMatrix();
-    for (int i = 0; i < particleSet.size(); i++) {
-        
-        CollInfo collision = CheckCollisionParticleBox(particleSet[i].position, box.modelMatrix);
+    for (int i : particleIndices) {
+        Particle& p = massPoints[i];
+        CollInfo collision = CheckCollisionParticleBox(p.position, box.modelMatrix);
         if (collision.isColliding) {
-            glm::vec3 v_rel = particleSet[i].velocity - box.CalculateVelocityOfWorldPoint(particleSet[i].position);
-            glm::vec3 xBox = particleSet[i].position - box.position; // XBOX OMG xDDDDDDDDDDDDDDDDDDD
+            glm::vec3 v_rel = p.velocity - box.CalculateVelocityOfWorldPoint(p.position);
+            glm::vec3 xBox = p.position - box.position; // XBOX OMG xDDDDDDDDDDDDDDDDDDD
             float dvn = glm::dot(v_rel, collision.normal);
             if (dvn <= 0) {
                 float q = -(1.f + c) * glm::dot(v_rel, collision.normal);
-                float d = (1.f / particleSet[i].mass) + box.GetInverseMass() +
+                float d = (1.f / p.mass) + box.GetInverseMass() +
                 glm::dot(
                     (glm::cross(box.GetInverseInertiaTensor() * glm::cross(xBox, collision.normal), xBox)),
                     collision.normal
                 );
                 float impuls = q / d;
-                particleSet[i].velocity += impuls * collision.normal / particleSet[i].mass;
-                box.ApplyImpuls(-impuls * collision.normal, particleSet[i].position);
+                p.velocity += impuls * collision.normal / p.mass;
+                box.ApplyImpuls(-impuls * collision.normal, p.position);
             }
         }
     }
@@ -226,12 +253,67 @@ void Scene4::loadObj(std::string path) {
             int v1 = parseIndex(x);
             int v2 = parseIndex(y);
             int v3 = parseIndex(z);
-            forceGenerators.emplace_back(1.0f, 2.0f, &massPoints[v1], &massPoints[v2]);
-            forceGenerators.emplace_back(1.0f, 2.0f, &massPoints[v2], &massPoints[v3]);
-            forceGenerators.emplace_back(1.0f, 2.0f, &massPoints[v3], &massPoints[v1]);
+            int vs[3] = {v1, v2, v3};
+            // for each triangle edge, calculate the actual distance for rL
+            for (int i = 0; i < 3; i++) {
+                int a = vs[i];
+                int b = vs[(i + 1) % 3];
+
+                float restLength = glm::distance(massPoints[a].position, massPoints[b].position);
+                forceGenerators.emplace_back(50.0f, restLength, &massPoints[a], &massPoints[b]);
+            }
             faceReferences.emplace_back(v1,v2,v3); // Purpose: to keep track of faces for rotation recomputation
         }
     }
     
     file.close();
+}
+
+void Scene4::updateSpacialGrid() {
+    spatialGrid.clear();
+    for (int i = 0; i < massPoints.size(); ++i) {
+        gridKey key = {
+                static_cast<int>(std::floor(massPoints[i].position.x / cellSize)),
+                static_cast<int>(std::floor(massPoints[i].position.y / cellSize)),
+                static_cast<int>(std::floor(massPoints[i].position.z / cellSize))
+        };
+        spatialGrid[key].push_back(i);
+    }
+}
+std::vector<int> Scene4::getParticlesNearBox() {
+    std::vector<int> nearbyIndices;
+    // calculate Box AABB in world space
+    // since wall is a 10x10 wall at Y=15, we check that. if we cahnged that, we would of course need to change these hard coded values
+    glm::vec3 minB = box.position - (box.scale * 1.5f);
+    glm::vec3 maxB = box.position + (box.scale * 1.5f);
+
+    int minX = std::floor(minB.x / cellSize);
+    int maxX = std::floor(maxB.x / cellSize);
+    int minY = std::floor(minB.y / cellSize);
+    int maxY = std::floor(maxB.y / cellSize);
+    int minZ = std::floor(minB.z / cellSize);
+    int maxZ = std::floor(maxB.z / cellSize);
+
+    for (int x = minX; x <= maxX; ++x) {
+        for (int y = minY; y <= maxY; ++y) {
+            for (int z = minZ; z <= maxZ; ++z) {
+                gridKey key = {x, y, z};
+                if (spatialGrid.count(key)) {
+                    auto& cellParticles = spatialGrid[key];
+                    nearbyIndices.insert(nearbyIndices.end(), cellParticles.begin(), cellParticles.end());
+                }
+            }
+        }
+    }
+    return nearbyIndices;
+}
+float Scene4::boxSDF(glm::vec3 p) {
+    //1. transform point into local space of box
+    glm::vec3 localP = glm::conjugate(box.rotation) * (p-box.position);
+    // 2. calcuate distance to box bounds
+    glm::vec3 d = glm::abs(localP) - (box.scale * 0.5f);
+    // 3. combine axis distances
+    float externalDistance = glm::length(glm::max(d, 0.0f));
+    float internatDistance = glm::min(glm::max(d.x, glm::max(d.y, d.z)), 0.0f);
+    return externalDistance + internatDistance;
 }

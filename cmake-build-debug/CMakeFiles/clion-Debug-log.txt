@@ -2,6 +2,6 @@ C:\Users\felly\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\cmake.exe -DCM
 -- Using wgpu-native backend for WebGPU
 -- Using WebGPU runtime from 'C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug/_deps/webgpu-backend-wgpu-src/bin/windows-x86_64/wgpu_native.dll'
 -- Including Win32 support
--- Configuring done (0.3s)
+-- Configuring done (0.8s)
 -- Generating done (0.1s)
 -- Build files have been written to: C:/Users/felly/CLionProjects/game-physics-template/cmake-build-debug
