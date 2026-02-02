@@ -11,10 +11,10 @@ void Scene4::init() {
     loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Car.obj)");
 
 
-    box = Box(1.0f, 10.0f, 10.0f, -1.0f); //made mass negative to simulate as wall!
+    box = Box(10.0f, 10.0f, 10.0f, -1.0f); //made mass negative to simulate as wall!
     box.color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
     box.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(0, 0, 1));
-    box.position = glm::vec3(0.0f, 5.0f, 0.0f);
+    box.position = glm::vec3(0.0f, 10.0f, 0.0f);
     crashVelocity = glm::vec3(0.0f, 15.0f, 0.0f);
     for(auto& p: massPoints){
         p.velocity = crashVelocity;
