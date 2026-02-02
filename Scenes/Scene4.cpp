@@ -6,7 +6,7 @@
 
 void Scene4::init() {
     massPoints = {};
-
+    globalStiffness = 250.0f;
     // TO USE, REPLACE WITH OWN PATH OF OBJ FILE!!
     loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Car.obj)");
 
@@ -35,7 +35,12 @@ void Scene4::onGUI() {
 
     ImGui::InputFloat("Vehicle Velocity (INPUT POSITIVE VALUE):", &crashVelocity.y);
     ImGui::InputFloat("Coefficient of Restitution:", &c);
-    ImGui::InputFloat("Grid Cell Size:", &cellSize);
+    if(ImGui::SliderFloat("Spring stiffness: ", &globalStiffness, 10.0f, 500.0f)){
+        for(auto& spring: forceGenerators){
+            spring.stiffness = globalStiffness;
+        }
+    }
+    ImGui::InputFloat("Grid Cell Size (SET ABOVE 0):", &cellSize);
 
     auto startSim = ImGui::Button("Toggle Simulation");
     if(startSim){
@@ -130,6 +135,14 @@ void Scene4::simulateStep() {
     if(isSimulating) {       
         accTime += ImGui::GetIO().DeltaTime;
         if (accTime >= timeStep) {
+            //NOTE: we dont simulate the rigidbody of the wall since its not supposed to move anyway
+            // mass spring step
+            if (simulationIndex == 0) {
+                performEulerStep();
+            } else if (simulationIndex == 1) {
+                performMidPointSimulation();
+            }
+
             // perform collision detection
             std::vector<int> candidates;
             if(accelerationIndex==0) {
@@ -138,7 +151,7 @@ void Scene4::simulateStep() {
                 candidates = getParticlesNearBox();
             }else{
                 //using sdf as acceleration
-                //pre filtering indices where sdf < threshold
+                //filtering indices where sdf < threshold
                 for (int i = 0; i < massPoints.size(); ++i) {
                     if (boxSDF(massPoints[i].position) < 1.0f) { // 1.0f as small buffer to avoid tunneling and floating point precision
                         candidates.push_back(i);
@@ -147,17 +160,6 @@ void Scene4::simulateStep() {
             }
             CheckCollisionsBox2Particle(candidates);
 
-            // box step; Note: we dont need this really since box is static anyway
-            //if (gravityActive) box.ApplyForce(gravity * box.mass, box.position, timeStep);
-            //box.SimulateStep(timeStep);
-
-
-            // mass spring step
-            if (simulationIndex == 0) {
-                performEulerStep();
-            } else if (simulationIndex == 1) {
-                performMidPointSimulation();
-            }
             accTime = 0.0f;
         }
     }
@@ -170,7 +172,7 @@ void Scene4::CheckCollisionsBox2Particle(const std::vector<int>& particleIndices
         CollInfo collision = CheckCollisionParticleBox(p.position, box.modelMatrix);
         if (collision.isColliding) {
             glm::vec3 v_rel = p.velocity - box.CalculateVelocityOfWorldPoint(p.position);
-            glm::vec3 xBox = p.position - box.position; // XBOX OMG xDDDDDDDDDDDDDDDDDDD
+            glm::vec3 xBox = p.position - box.position;
             float dvn = glm::dot(v_rel, collision.normal);
             if (dvn <= 0) {
                 float q = -(1.f + c) * glm::dot(v_rel, collision.normal);
@@ -229,7 +231,7 @@ void Scene4::loadObj(std::string path) {
                 int b = vs[(i + 1) % 3];
 
                 float restLength = glm::distance(massPoints[a].position, massPoints[b].position);
-                forceGenerators.emplace_back(50.0f, restLength, &massPoints[a], &massPoints[b]);
+                forceGenerators.emplace_back(globalStiffness, restLength, &massPoints[a], &massPoints[b]);
             }
             faceReferences.emplace_back(v1,v2,v3); // Purpose: to keep track of faces for rotation recomputation
         }

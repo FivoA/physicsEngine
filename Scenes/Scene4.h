@@ -17,6 +17,7 @@ class Scene4: public Scene {
     float timeStep = 0.05f;
 
     glm::vec3 crashVelocity;
+    float globalStiffness;
 
     Box box;
     float c;
