@@ -23,8 +23,8 @@ class Scene4: public Scene {
 
     bool gravityActive = false;
     glm::vec3 gravity = glm::vec3(0.0f,0.0f,-9.81f);
-    int simulationIndex = 0; // 0 = Euler, 1 = Midpoint, 2 = LeapFrog
-    const char* simulations[3] = { "Euler Step", "Midpoint Evaluation", "LeapFrog Integrator"};
+    int simulationIndex = 0; // 0 = Euler, 1 = Midpoint
+    const char* simulations[2] = { "Euler Step", "Midpoint Evaluation"};
 
     int accelerationIndex = 0; // 0=spatial grid, 1= sdf
     const char* accelerations[2] = { "Spatial Grid", "SDF"};
@@ -56,7 +56,6 @@ class Scene4: public Scene {
 
     void performEulerStep();
     void performMidPointSimulation();
-    void performLeapFrog();
     void StarSimulation();
     void CheckCollisionsBox2Particle(const std::vector<int>& indices);
 

@@ -6,8 +6,11 @@
 
 void Scene4::init() {
     massPoints = {};
+
     // TO USE, REPLACE WITH OWN PATH OF OBJ FILE!!
     loadObj(R"(C:\Users\felly\CLionProjects\game-physics-template\Scenes\Car.obj)");
+
+
     box = Box(1.0f, 10.0f, 10.0f, -1.0f); //made mass negative to simulate as wall!
     box.color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
     box.rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(0, 0, 1));
@@ -22,16 +25,15 @@ void Scene4::init() {
 }
 
 void Scene4::onGUI() {
-    ImGui::SliderFloat("Timestep: ", &timeStep, 0.001f, 0.005f);
-    ImGui::Combo("Select Simulation", &simulationIndex, simulations, 3);
+    ImGui::SliderFloat("Timestep: ", &timeStep, 0.001f, 0.003f);
+    ImGui::Combo("Select Simulation", &simulationIndex, simulations, 2);
     ImGui::Combo("Select Collision Acceleration", &accelerationIndex, accelerations, 2);
 
-    ImGui::InputFloat("Gravity X:", &gravity.x);
-    ImGui::InputFloat("Gravity Y:", &gravity.y);
-    ImGui::InputFloat("Gravity Z:", &gravity.z);
-    ImGui::Checkbox("Toggle the selected gravity", &gravityActive);
+    ImGui::InputFloat("Wall X:", &box.position.x);
+    ImGui::InputFloat("Wall Y:", &box.position.y);
+    ImGui::InputFloat("Wall Z:", &box.position.z);
 
-    ImGui::InputFloat("Vehicle Velocity (ONLY INPUT POSITIVE VALUE):", &crashVelocity.y);
+    ImGui::InputFloat("Vehicle Velocity (INPUT POSITIVE VALUE):", &crashVelocity.y);
     ImGui::InputFloat("Coefficient of Restitution:", &c);
     ImGui::InputFloat("Grid Cell Size:", &cellSize);
 
@@ -107,37 +109,6 @@ void Scene4::performEulerStep() {
     }
 }
 
-void Scene4::performLeapFrog() {
-    // let each spring add its force
-    for (int i = 0; i < forceGenerators.size(); ++i) {
-        forceGenerators[i].updateForce(1);
-    }
-    for (int i = 0; i < massPoints.size(); ++i) {
-        // 1. Calculate accerleration from forces
-        massPoints[i].acceleration = (massPoints[i].totalInternalForce / massPoints[i].mass) + (gravityActive ? gravity: glm::vec3(0));
-
-        // 2. Init v(t-h/2) if not done before;
-        // NOTE FOR TUTOR: We don't assume that v(t-h/2) is v(0), we decided to make a reverse prediction here to calculate it :)
-        if(!massPoints[i].leapfroginit){
-            massPoints[i].velocityHalfPrev = massPoints[i].velocity - massPoints[i].acceleration * timeStep  * 0.5f;
-            massPoints[i].leapfroginit = true;
-        }
-        // 2. Update velocity
-        glm::vec3 halfStepVelocity = massPoints[i].velocityHalfPrev + timeStep * massPoints[i].acceleration;
-        massPoints[i].velocityHalfPrev = halfStepVelocity;
-        massPoints[i].velocity = halfStepVelocity;
-        // 3. Update position
-        massPoints[i].position = massPoints[i].position + halfStepVelocity * timeStep;
-
-        // Check for collision with bounding planes and reset position/velocity if needed
-        for (int j = 0; j < boundingPlanes.size(); ++j) {
-            boundingPlanes[j].LEAPcheckCollisionAndCorrectPosition(&massPoints[i]);
-        }
-
-        // clear internal force
-        massPoints[i].clearInternalForce();
-    }
-}
 
 void Scene4::onDraw(Renderer &renderer) {
     renderer.drawCube(box.position, box.rotation, box.scale, box.color);
@@ -169,7 +140,7 @@ void Scene4::simulateStep() {
                 //using sdf as acceleration
                 //pre filtering indices where sdf < threshold
                 for (int i = 0; i < massPoints.size(); ++i) {
-                    if (boxSDF(massPoints[i].position) < 1.0f) { // 1.0f is small buffer
+                    if (boxSDF(massPoints[i].position) < 1.0f) { // 1.0f as small buffer to avoid tunneling and floating point precision
                         candidates.push_back(i);
                     }
                 }
@@ -186,8 +157,6 @@ void Scene4::simulateStep() {
                 performEulerStep();
             } else if (simulationIndex == 1) {
                 performMidPointSimulation();
-            } else {
-                performLeapFrog();
             }
             accTime = 0.0f;
         }
@@ -283,7 +252,6 @@ void Scene4::updateSpacialGrid() {
 std::vector<int> Scene4::getParticlesNearBox() {
     std::vector<int> nearbyIndices;
     // calculate Box AABB in world space
-    // since wall is a 10x10 wall at Y=15, we check that. if we cahnged that, we would of course need to change these hard coded values
     glm::vec3 minB = box.position - (box.scale * 1.5f);
     glm::vec3 maxB = box.position + (box.scale * 1.5f);
 
@@ -308,12 +276,14 @@ std::vector<int> Scene4::getParticlesNearBox() {
     return nearbyIndices;
 }
 float Scene4::boxSDF(glm::vec3 p) {
-    //1. transform point into local space of box
+    //1. transform point into local space of box, while also pretending box is at origin for easier calculations
     glm::vec3 localP = glm::conjugate(box.rotation) * (p-box.position);
-    // 2. calcuate distance to box bounds
+    // 2. calcuate distance to box bounds; if a component is positive, we are outside if negative we are inside
     glm::vec3 d = glm::abs(localP) - (box.scale * 0.5f);
     // 3. combine axis distances
+    // if we are inside, below will be 0
     float externalDistance = glm::length(glm::max(d, 0.0f));
-    float internatDistance = glm::min(glm::max(d.x, glm::max(d.y, d.z)), 0.0f);
+    // if we are outside, below will be 0
+    float internatDistance = glm::min(glm::max(d.x, glm::max(d.y, d.z)), 0.0f); //only triggers if all values of d are negative and we are truly inside
     return externalDistance + internatDistance;
 }
